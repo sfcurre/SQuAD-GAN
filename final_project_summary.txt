@@ -1,0 +1,7 @@
+We plan to use the Stanford Question Answering Dataset 2.0 (SQuAD 2.0) to test out the possibility of using GANs in the embedding space for question generation tasks. Next steps: create a GitHub repository and identify specific tasks (we will be using OSC for obvious reasons). We plan on using SpaCy for preprocessing and language embedding/lookup with GloVe embeddings (might also look at HuggingFace for transformer models, particularly for a fill-in-the-blank masking structure of question generation). An initial version of the lookup procedure has been tested with good results.
+
+GAN architecture:
+*Inputs: knowledge base text, subject answer (during inference, use entity recognition to select subject, etc.)
+*Outputs: generated question
+
+Note: Models for the SQuAD 2.0 dataset do not perform extremely well; the model used in the paper introducing SQuAD 2.0 reports accuracy of 66.3% (human accuracy 89.5%). We do not necessarily expect our GAN models to perform well. State of the art models have achieved around 90% accuracy.
