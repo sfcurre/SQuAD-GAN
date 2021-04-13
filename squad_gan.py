@@ -261,7 +261,9 @@ class GAN:
         self.optimizer = optimizer
         self.adversarial_loss = adversarial_loss
         self.question_loss = question_loss
-        self.mode = 'none'
+        self.discriminator.compile(optimizer=self.optimizer, loss=self.adversarial_loss, metrics=[tf.keras.metrics.CategoricalAccuracy()])
+        self.generator.compile(optimizer=self.optimizer, loss=self.question_loss)
+        self.adversarial.compile(optimizer=self.optimizer, loss=self.adversarial_loss, metrics=[tf.keras.metrics.CategoricalAccuracy()])
         self.compiled = True
 
     def fit(self, loader, epochs, generator_epochs = 1, discriminator_epochs = 1, question_epochs = 1, pretrain_epochs = 1):
@@ -272,11 +274,7 @@ class GAN:
             dl = 0
             self.generator.trainable = False
             self.discriminator.trainable = True
-            if self.mode != 'discriminator':
-
-                self.discriminator.compile(optimizer=self.optimizer, loss=self.adversarial_loss, metrics=[tf.keras.metrics.CategoricalAccuracy()])
-                self.mode = 'discriminator'
-
+           
             for b, j in enumerate(np.random.permutation(len(loader))):
 
                 c, a, q = loader[j]
@@ -305,24 +303,14 @@ class GAN:
                 self.discriminator.trainable = False
 
                 for _ in range(question_epochs):
-                    if self.mode != 'question':
-                        self.generator.compile(optimizer=self.optimizer, loss=self.question_loss)
-                        self.mode = 'question'
                     ql = self.generator.train_on_batch([c, a, r], q)
 
                 for _ in range(generator_epochs):
-                    if self.mode != 'adversarial':
-                        self.adversarial.compile(optimizer=self.optimizer, loss=self.adversarial_loss, metrics=[tf.keras.metrics.CategoricalAccuracy()])
-                        self.mode = 'adversarial'
                     gl = self.adversarial.train_on_batch([c, a, r], np.ones((1, a.shape[1])))
 
                 if discriminator_epochs:
                     self.generator.trainable = False
                     self.discriminator.trainable = True
-
-                    if self.mode != 'discriminator':
-                        self.adversarial.compile(optimizer=self.optimizer, loss=self.adversarial_loss, metrics=[tf.keras.metrics.CategoricalAccuracy()])
-                        self.mode = 'discriminator'
                     
                     oq = self.generator.predict_on_batch([c, a, r])
                     fake_labels = np.zeros([*oq.shape[:2]])
