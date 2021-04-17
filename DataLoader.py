@@ -6,9 +6,6 @@ from tqdm import tqdm
 import tensorflow as tf
 from collections import defaultdict
 
-from MultiHeadAttention import *
-from squad_gan import *
-from GAN import *
 ## TODO: RE-WRIT THE DATALOADER TO LOAD THE DATA IN A "BATCH" FORMAT
 # MAPPING 1 CONTEXT TO 1 QUETSION/ ANSWER, Rather Than One To Multiple?
 
@@ -27,7 +24,7 @@ class DataLoader:
             self.data = []
             #print(data)
             for title_set in data:
-                print(title_set['paragraphs'])
+                #print(title_set['paragraphs'])
                 self.data.extend(title_set['paragraphs'])
 
         self.ids = sorted(range(len(self.data)), key=lambda i: self.data[i]['context'])
