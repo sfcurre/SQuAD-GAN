@@ -35,7 +35,7 @@ def main():
     loader = DataLoader(args.json, batch_size=1, context_padding=200, answer_padding=10, question_padding=40)
 
     #shapes are in the order c a r
-    gan = GAN([(200, 300), (None, 10, 300), (None, 100)], embedding_size=300, question_padding=40)
+    gan = GAN([(200, 300), (10, 300), (100,)], embedding_size=300, question_padding=40)
 
     if args.load:
         gan.load(args.load)
@@ -46,23 +46,22 @@ def main():
     gan.discriminator.summary()
     gan.adversarial.summary()
 
-    gan.fit(loader, args.epochs, generator_epochs=1, discriminator_epochs=1, question_epochs=1, pretrain_epochs=1)
+    gan.fit(loader, args.epochs, generator_epochs=1, discriminator_epochs=1, question_epochs=0, pretrain_epochs=1)
 
     c, a, q = loader[0]
-    r = np.random.normal(0, 1, size = [1, a.shape[1], 100])
+    r = np.random.normal(0, 1, size = [len(a), 100])
     output = gan.generator.predict_on_batch([c, a, r])
     output = np.squeeze(output)
 
     np.save('gan_output.npy', output)
 
     nlp = loader.nlp
-    context = lookup(c[0], nlp)
+    context = [lookup(c_, nlp) for c_ in c]
     outs = [lookup(out, nlp) for out in output]
 
     with open('gan_output.txt', 'w') as fp:
-        print(context, file = fp)
-        print()
-        print(*outs, sep='\n', file = fp)
+        for c_, o_ in zip(context, outs):
+            print(c_, o_, file=fp, sep='|')
 
 if __name__ == '__main__':
     main()

@@ -6,10 +6,6 @@ from tqdm import tqdm
 import tensorflow as tf
 from collections import defaultdict
 
-from DataLoader import *
-from squad_gan import *
-from GAN import *
-
 class MultiHeadAttention(tf.keras.layers.Layer):
     def __init__(self, units, heads=1,
                  output_dense = True,
