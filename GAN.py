@@ -36,7 +36,7 @@ class GAN:
         return tf.keras.models.Model([c_in, a_in, r_in], q_out)
 
     def discriminator_model(self):
-        q_in = tf.keras.layers.Input((None, self.question_padding, self.embedding_size))
+        q_in = tf.keras.layers.Input((self.question_padding, self.embedding_size))
 
         h1 = tf.keras.layers.Conv1D(128, 3, activation='relu')(q_in)
         h2 = tf.keras.layers.Conv1D(128, 3, activation='relu')(h1)
