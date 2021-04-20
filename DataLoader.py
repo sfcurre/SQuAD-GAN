@@ -39,17 +39,12 @@ class DataLoader:
             #print("TEXT: " + str(self.nlp(text)))
             p = 0
             for i, token in enumerate(self.nlp(text)):
-                p += 1
-            for i, token in enumerate(self.nlp(text)):
                 if vector is None:
-                    #print("padding  = " + str(padding))
-                    #print("numwords = " + str(p))
                     vector = np.zeros((padding, len(token.vector)))
                 if i < padding:
                     vector[i, :] = token.vector
             return vector
         elif isinstance(text, (list, np.ndarray)):
-            #print("inst-padding : " + str(padding))
             return np.stack([self.extract_text_features(item, padding) for item in text])
 
     def on_epoch_end(self):
@@ -62,17 +57,26 @@ class DataLoader:
     def __getitem__(self, index):
         idx = self.ids[index]
         context = self.data[idx]['context']
-        questions, answers = [], []
-        for qas in self.data[idx]['qas']:
-            questions.append(qas['question'])
-            if qas['answers']:
-                answers.append('<b>'.join([a['text'] for a in qas['answers']]))
-            else:
-                answers.append('<b>'.join([a['text'] for a in qas['plausible_answers']]))
         context_vector = self.extract_text_features(context, self.context_padding)
-        answer_vectors = self.extract_text_features(answers, self.answer_padding)
-        question_vectors = self.extract_text_features(questions, self.question_padding)
-        return context_vector[None,...], answer_vectors[None,...], question_vectors[None,...]
+
+        C,A,Q = [],[],[]
+        for qas in self.data[idx]['qas']:
+            C.append(context_vector)
+            if qas['answers']:
+                answer = '<b>'.join([a['text'] for a in qas['answers']])
+            else:
+                answer = '<b>'.join([a['text'] for a in qas['plausible_answers']])
+            A.append(self.extract_text_features(answer, self.answer_padding))
+
+            question = qas['question']
+            Q.append(self.extract_text_features(question, self.question_padding))
+        C = np.array(C)
+        A = np.array(A)
+        Q = np.array(Q)
+        # print(C.shape)
+        # print(A.shape)
+        # print(Q.shape)
+        return C,A,Q
 
     def get_batch_ids(self, index):
         return self.ids[index]
