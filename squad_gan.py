@@ -5,6 +5,7 @@ import json, argparse
 from tqdm import tqdm
 import tensorflow as tf
 from collections import defaultdict
+import logging
 
 from GAN import *
 from MultiHeadAttention import *
@@ -13,6 +14,7 @@ from DataLoader import *
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 def parse_args():
@@ -61,7 +63,7 @@ def main():
 
     with open('gan_output.txt', 'w') as fp:
         for c_, o_ in zip(context, outs):
-            print(c_, o_, file=fp, sep='|')
+            logging.info(c_, o_, file=fp, sep='|')
 
 if __name__ == '__main__':
     main()

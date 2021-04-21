@@ -1,7 +1,7 @@
 import spacy
 import numpy as np
 import os, shutil, json, sys
-import json, argparse
+import json, argparse, logging
 from tqdm import tqdm
 import tensorflow as tf
 from collections import defaultdict
@@ -73,7 +73,7 @@ class GAN:
         if not self.compiled:
             raise AssertionError("Model must be compiled first.")
         for i in range(pretrain_epochs):
-            print(f'Pretrain Epoch {i + 1}:')
+            logging.info(f'Pretrain Epoch {i + 1}:')
             dl = 0
             self.generator.trainable = False
             self.discriminator.trainable = True
@@ -92,10 +92,10 @@ class GAN:
                     dl = self.discriminator.train_on_batch(qs, labels)
 
             loader.on_epoch_end()
-            print(f"Discriminator loss - {dl}")
+            logging.info(f"Discriminator loss - {dl}")
 
         for i in range(epochs):
-            print(f'Epoch {i + 1}:')
+            logging.info(f'Epoch {i + 1}:')
             ql = gl = dl = 0
             for b, j in enumerate(np.random.permutation(len(loader))):
 
@@ -124,10 +124,10 @@ class GAN:
                         dl = self.discriminator.train_on_batch(qs, labels)
 
                 if b % 500 == 0:
-                    print(f"Batch {b}/{len(loader)}")
-                    print(f"Question loss      - {ql}")
-                    print(f"Generator loss     - {gl}")
-                    print(f"Discriminator loss - {dl}")
+                    logging.info(f"Batch {b}/{len(loader)}")
+                    logging.info(f"Question loss      - {ql}")
+                    logging.info(f"Generator loss     - {gl}")
+                    logging.info(f"Discriminator loss - {dl}")
 
             loader.on_epoch_end()
             if i % 10 == 0:
