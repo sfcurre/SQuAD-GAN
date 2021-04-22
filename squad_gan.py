@@ -59,11 +59,12 @@ def main():
 
     nlp = loader.nlp
     context = [lookup(c_, nlp) for c_ in c]
+    answers = [lookup(a_, nlp) for a_ in a]
     outs = [lookup(out, nlp) for out in output]
 
     with open('gan_output.txt', 'w') as fp:
-        for c_, o_ in zip(context, outs):
-            logging.info(c_, o_, file=fp, sep='|')
+        for c_, a_, o_ in zip(context, outs):
+            logging.info(c_, a_, o_, file=fp, sep='|')
 
 if __name__ == '__main__':
     main()
