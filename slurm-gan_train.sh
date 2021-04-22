@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=SQuAD_GAN
-#SBATCH --time=1:59:59
+#SBATCH --time=23:59:59
 #SBATCH --output="SQuAD_GAN_train-%j.out"
 #SBATCH --account=PAS1939
 #SBATCH --nodes=1

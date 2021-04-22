@@ -130,10 +130,10 @@ class GAN:
                     logging.info(f"Discriminator loss - {dl}")
 
             loader.on_epoch_end()
-            if i % 10 == 0:
-                self.generator.save('models/generator.h5', save_format = 'h5')
-                self.discriminator.save('models/discriminator.h5', save_format = 'h5')
-                self.adversarial.save('models/adversarial.h5', save_format = 'h5')
+
+            self.generator.save('models/generator.h5', save_format = 'h5')
+            self.discriminator.save('models/discriminator.h5', save_format = 'h5')
+            self.adversarial.save('models/adversarial.h5', save_format = 'h5')
 
     def load(self, load_directory):
         load_dir = load_directory.rstrip('/')
