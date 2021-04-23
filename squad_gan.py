@@ -63,7 +63,7 @@ def main():
     outs = [lookup(out, nlp) for out in output]
 
     with open('gan_output.txt', 'w') as fp:
-        for c_, a_, o_ in zip(context, outs):
+        for c_, a_, o_ in zip(context, answers, outs):
             logging.info(c_, a_, o_, file=fp, sep='|')
 
 if __name__ == '__main__':
