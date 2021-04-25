@@ -64,7 +64,7 @@ def main():
 
     with open('gan_output.txt', 'w') as fp:
         for c_, a_, o_ in zip(context, answers, outs):
-            logging.info(c_, a_, o_, file=fp, sep='|')
+            print(c_, a_, o_, file=fp, sep='|')
 
 if __name__ == '__main__':
     main()
